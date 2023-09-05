@@ -94,7 +94,7 @@ class TestDetailPage(TestCase):
     def test_anonymous_client_has_no_form(self):
         response = self.client.get(self.detail_url)
         self.assertNotIn('form', response.context)
-        
+
     def test_authorized_client_has_form(self):
         # Авторизуем клиент при помощи ранее созданного пользователя.
         self.client.force_login(self.author)

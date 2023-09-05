@@ -18,16 +18,16 @@ NOTE_EDIT_URL = 'notes:edit'
 LOGIN_URL = 'users:login'
 
 NOTE_DATA = {
-            'title': 'Новый заголовок',
-            'text': 'Новый текст',
-            'slug': 'new-slug'
-        }
+    'title': 'Новый заголовок',
+    'text': 'Новый текст',
+    'slug': 'new-slug'
+}
 
 NEW_DATA = {
-            'title': 'New header',
-            'text': 'New text',
-            'slug': 'super-new-slug'
-        }
+    'title': 'New header',
+    'text': 'New text',
+    'slug': 'super-new-slug'
+}
 
 
 class TestNoteCreate(TestCase):
