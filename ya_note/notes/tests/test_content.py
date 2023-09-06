@@ -1,7 +1,5 @@
-# news/tests/test_content.py
 from django.contrib.auth import get_user_model
-from django.test import TestCase
-# Импортируем функцию reverse(), она понадобится для получения адреса страницы.
+from django.test import Client, TestCase
 from django.urls import reverse
 
 from notes.models import Note
@@ -21,28 +19,32 @@ class TestConntext(TestCase):
             author=cls.author
         )
         cls.reader = User.objects.create(username='Читатель простой')
+        cls.author_client = Client()
+        cls.author_client.force_login(cls.author)
+        cls.reader_client = Client()
+        cls.reader_client.force_login(cls.reader)
 
     def test_check_list_for_diff_users(self):
         note_in_list = (
-            (self.reader, False),
-            (self.author, True),
+            (self.reader_client, False),
+            (self.author_client, True),
         )
 
         for param_client, is_note_in_list in note_in_list:
-            self.client.force_login(param_client)
-            url = reverse('notes:list')
-            response = self.client.get(url)
-            object_list = response.context['object_list']
-            self.assertEqual((self.notes in object_list), is_note_in_list)
+            with self.subTest():
+                url = reverse('notes:list')
+                response = param_client.get(url)
+                all_notes = response.context['object_list']
+                self.assertEqual((self.notes in all_notes), is_note_in_list)
 
     def test_form_is_in_context(self):
         urls = (
             ('notes:add', None),
             ('notes:edit', (self.notes.slug,)),
         )
-        self.client.force_login(self.author)
 
         for name, args in urls:
-            url = reverse(name, args=args)
-            response = self.client.get(url)
-            self.assertIn('form', response.context)
+            with self.subTest():
+                url = reverse(name, args=args)
+                response = self.author_client.get(url)
+                self.assertIn('form', response.context)

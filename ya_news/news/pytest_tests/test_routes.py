@@ -1,7 +1,6 @@
-# test_routes.py
 import pytest
-
 from http import HTTPStatus
+
 from pytest_django.asserts import assertRedirects
 
 

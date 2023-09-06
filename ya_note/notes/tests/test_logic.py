@@ -1,13 +1,12 @@
-# news/tests/test_logic.py
 from http import HTTPStatus
 
 from django.contrib.auth import get_user_model
+from django.test import Client, TestCase
 from django.urls import reverse
-from notes.forms import WARNING
-from notes.models import Note
 from pytils.translit import slugify
 
-from django.test import Client, TestCase
+from notes.forms import WARNING
+from notes.models import Note
 
 User = get_user_model()
 
@@ -53,7 +52,7 @@ class TestNoteCreate(TestCase):
         self.assertRedirects(response, self.success_url)
         self.assertEqual(Note.objects.count(), 1)
 
-        new_note = Note.objects.get()
+        new_note = Note.objects.last()
         self.assertEqual(new_note.title, self.note_data['title'])
         self.assertEqual(new_note.text, self.note_data['text'])
         self.assertEqual(new_note.slug, self.note_data['slug'])
@@ -107,6 +106,7 @@ class TestNoteLogic(TestCase):
         self.assertEqual(self.notes.title, NEW_DATA['title'])
         self.assertEqual(self.notes.text, NEW_DATA['text'])
         self.assertEqual(self.notes.slug, NEW_DATA['slug'])
+        self.assertEqual(self.notes.author, self.author)
 
     def test_other_user_cant_edit_note(self):
         url = reverse(NOTE_EDIT_URL, args=(self.notes.slug,))
@@ -117,6 +117,7 @@ class TestNoteLogic(TestCase):
         self.assertEqual(self.notes.title, note_from_db.title)
         self.assertEqual(self.notes.text, note_from_db.text)
         self.assertEqual(self.notes.slug, note_from_db.slug)
+        self.assertEqual(self.notes.author, note_from_db.author)
 
     def test_author_can_delete_note(self):
         url = reverse(NOTE_DELETE_URL, args=(self.notes.slug,))
