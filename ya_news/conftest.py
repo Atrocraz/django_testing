@@ -1,11 +1,11 @@
 from datetime import timedelta
-import pytest
 
+import pytest
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 
-from news.models import News, Comment
+from news.models import Comment, News
 
 HOME_URL = 'news:home'
 DETAIl_URL = 'news:detail'
@@ -93,7 +93,7 @@ def bulk_news():
 
 @pytest.fixture
 def news_id(news):
-    return (news.id, )
+    return news.id,
 
 
 @pytest.fixture
@@ -121,4 +121,4 @@ def bulk_comments(author, news):
 
 @pytest.fixture
 def comment_id(comment):
-    return (comment.id, )
+    return comment.id,

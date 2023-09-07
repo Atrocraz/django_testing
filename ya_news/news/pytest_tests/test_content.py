@@ -1,3 +1,4 @@
+
 import pytest
 from django.conf import settings
 
@@ -23,7 +24,6 @@ def test_news_order(client, bulk_news, get_home_url):
     assert all_dates == sorted_dates
 
 
-@pytest.mark.django_db
 def test_comments_order(
     admin_client, bulk_comments, get_news_detail_url
 ):
@@ -33,7 +33,7 @@ def test_comments_order(
     assert all_comments.count() > 0
 
     sorted_comments = all_comments.order_by('created')
-    assert set(all_comments) == set(sorted_comments)
+    assert list(all_comments) == list(sorted_comments)
 
 
 @pytest.mark.django_db
@@ -50,5 +50,5 @@ def test_pages_contains_form(
     response = parametrized_client.get(get_news_detail_url)
     assert ('form' in response.context) is exp_result
 
-    if exp_result is True:
+    if exp_result:
         assert isinstance(response.context['form'], CommentForm)

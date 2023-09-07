@@ -1,5 +1,5 @@
-from random import choice
 from http import HTTPStatus
+from random import choice
 
 import pytest
 from pytest_django.asserts import assertFormError, assertRedirects
@@ -25,14 +25,13 @@ def test_diff_users_can_leave_comment(
     parametrized_client.post(get_news_detail_url, data={'text': comment_text})
     assert Comment.objects.count() == result
 
-    if result == 1:
+    if result:
         comment = Comment.objects.get()
         assert comment.text == comment_text
         assert comment.author == author
         assert comment.news == news
 
 
-@pytest.mark.django_db
 def test_bad_language(
     admin_client, get_news_detail_url
 ):
@@ -50,7 +49,6 @@ def test_bad_language(
     assert Comment.objects.count() == expected_count
 
 
-@pytest.mark.django_db
 def test_user_cant_delete_comment_of_another_user(
     admin_client, get_comm_delete_url,
 ):
@@ -60,7 +58,6 @@ def test_user_cant_delete_comment_of_another_user(
     assert Comment.objects.count() == expected_count
 
 
-@pytest.mark.django_db
 def test_user_can_delete_his_comment(
     author_client, get_comm_delete_url, get_news_detail_url_redir,
 ):
@@ -70,7 +67,6 @@ def test_user_can_delete_his_comment(
     assert Comment.objects.count() == expected_count - 1
 
 
-@pytest.mark.django_db
 def test_user_cant_edit_comment_of_another_user(
     admin_client, get_comm_edit_url, comment
 ):
@@ -88,7 +84,6 @@ def test_user_cant_edit_comment_of_another_user(
     assert comment.news == old_comment_news
 
 
-@pytest.mark.django_db
 def test_user_can_edit_his_comment(
     author_client, get_comm_edit_url, get_news_detail_url_redir, comment
 ):
